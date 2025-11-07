@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Protected Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .password-form {
+            margin-top: 20px;
+        }
+        
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .content {
+            display: none;
+        }
+        
+        .content.show {
+            display: block;
+        }
+        
+        .hello-world {
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+            animation: fadeIn 1s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-5px);
+            }
+            20%, 40%, 60%, 80% {
+                transform: translateX(5px);
+            }
+        }
+        
+        .welcome-text {
+            color: #666;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Password Protection Screen -->
+        <div id="password-screen" class="password-form">
+            <h1>🔒 Protected Page</h1>
+            <p>Please enter the password to access this page</p>
+            <input 
+                type="password" 
+                id="password-input" 
+                placeholder="Enter password"
+                autocomplete="off"
+            >
+            <button onclick="checkPassword()">Submit</button>
+            <p class="error-message" id="error-message">Incorrect password. Please try again.</p>
+        </div>
+        
+        <!-- Protected Content -->
+        <div id="content" class="content">
+            <div class="hello-world">Hello World!</div>
+            <p class="welcome-text">🎉 Welcome to your first GitHub Pages site!</p>
+            <p class="welcome-text">You've successfully accessed the protected content.</p>
+        </div>
+    </div>
+    
+    <script>
+        // The password is: Pa$$w0rd
+        const CORRECT_PASSWORD = 'Pa$$w0rd';
+        
+        // Check if user is already authenticated (stored in sessionStorage)
+        window.onload = function() {
+            if (sessionStorage.getItem('authenticated') === 'true') {
+                showContent();
+            }
+            
+            // Allow Enter key to submit password
+            document.getElementById('password-input').addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    checkPassword();
+                }
+            });
+        };
+        
+        function checkPassword() {
+            const passwordInput = document.getElementById('password-input');
+            const errorMessage = document.getElementById('error-message');
+            const enteredPassword = passwordInput.value;
+            
+            if (enteredPassword === CORRECT_PASSWORD) {
+                // Store authentication in sessionStorage (only for current tab session)
+                sessionStorage.setItem('authenticated', 'true');
+                showContent();
+            } else {
+                // Show error message
+                errorMessage.classList.add('show');
+                passwordInput.value = '';
+                passwordInput.focus();
+                
+                // Shake animation
+                passwordInput.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    passwordInput.style.animation = '';
+                }, 500);
+            }
+        }
+        
+        function showContent() {
+            document.getElementById('password-screen').style.display = 'none';
+            document.getElementById('content').classList.add('show');
+        }
+    </script>
+</body>
+</html>
